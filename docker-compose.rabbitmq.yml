@@ -1,0 +1,34 @@
+version: "3"
+services:
+  mytb:
+    container_name: mytb
+    environment:
+      TB_QUEUE_TYPE: rabbitmq
+      TB_QUEUE_RABBIT_MQ_USERNAME: guest
+      TB_QUEUE_RABBIT_MQ_PASSWORD: guest
+      TB_QUEUE_RABBIT_MQ_HOST: mytb-rabbitmq
+      TB_QUEUE_RABBIT_MQ_PORT: 5672
+    image: "thingsboard/tb-postgres:3.2.2"
+    ports:
+      - "8080:9090"
+      - "1883:1883"
+      - "5683:5683/udp"
+    restart: unless-stopped
+    volumes:
+      - mytb-data:/data
+      - mytb-logs:/var/log/thingsboard
+
+  mytb-rabbitmq:
+    container_name: mytb-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    hostname: mytb-rabbitmq
+    image: "rabbitmq:3"
+    ports:
+      - "5672:5672"
+    restart: unless-stopped
+
+volumes:
+  mytb-data:
+  mytb-logs:
